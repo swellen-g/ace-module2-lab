@@ -218,25 +218,7 @@ EOF
           done
           if [ -z "$(git status --porcelain -- "$SCAN_PATH")" ]; then
             echo "Applying fallback parameterized query fixes for routes/login.ts & routes/search.ts..."
-            python3 -c "
-with open('routes/login.ts', 'r') as f:
-    code = f.read()
-code = code.replace(
-    \"models.sequelize.query(\`SELECT * FROM Users WHERE email = '\${req.body.email || ''}' AND password = '\${security.hash(req.body.password || '')}' AND deletedAt IS NULL\`, { model: UserModel, plain: true })\",
-    \"models.sequelize.query('SELECT * FROM Users WHERE email = :email AND password = :password AND deletedAt IS NULL', { replacements: { email: req.body.email || '', password: security.hash(req.body.password || '') }, model: UserModel, plain: true })\"
-)
-with open('routes/login.ts', 'w') as f:
-    f.write(code)
-
-with open('routes/search.ts', 'r') as f:
-    code = f.read()
-code = code.replace(
-    \"models.sequelize.query(\`SELECT * FROM Products WHERE ((name LIKE '%\${criteria}%' OR description LIKE '%\${criteria}%') AND deletedAt IS NULL) ORDER BY name\`)\",
-    \"models.sequelize.query('SELECT * FROM Products WHERE ((name LIKE :criteria OR description LIKE :criteria) AND deletedAt IS NULL) ORDER BY name', { replacements: { criteria: \\\`%\${criteria}%\` } })\"
-)
-with open('routes/search.ts', 'w') as f:
-    f.write(code)
-"
+            python3 .github/scripts/fallback_fix.py
           fi
           echo "----- working-tree changes under $SCAN_PATH -----"
           git status --porcelain -- "$SCAN_PATH" || true
