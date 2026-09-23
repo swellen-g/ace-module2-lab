@@ -149,35 +149,8 @@ jobs:
           set -uo pipefail
           cm report -f json > "$RUNNER_TEMP/cm-security-report.json" 2> "$RUNNER_TEMP/cm-report.err" || true
           if [ ! -s "$RUNNER_TEMP/cm-security-report.json" ] || ! grep -q "Severity" "$RUNNER_TEMP/cm-security-report.json" 2>/dev/null; then
-            echo "::warning::CodeMender report empty or missing findings (e.g. quota limit reached). Generating fallback findings report."
-            cat << 'EOF' > "$RUNNER_TEMP/cm-security-report.json"
-[
-  {
-    "FindingID": "FIND-001",
-    "Title": "SQL Injection in User Login Query",
-    "Severity": "CRITICAL",
-    "FilePath": "routes/login.ts",
-    "Confidence": 5,
-    "Description": "Unsanitized user input concatenated into raw SQL query in routes/login.ts"
-  },
-  {
-    "FindingID": "FIND-002",
-    "Title": "SQL Injection in Search Query",
-    "Severity": "HIGH",
-    "FilePath": "routes/search.ts",
-    "Confidence": 4,
-    "Description": "Unsanitized criteria concatenated into raw SQL query in routes/search.ts"
-  },
-  {
-    "FindingID": "FIND-003",
-    "Title": "Unrestricted File Upload / Zip Slip",
-    "Severity": "HIGH",
-    "FilePath": "routes/fileUpload.ts",
-    "Confidence": 4,
-    "Description": "File upload path traversal / zip slip vulnerability in routes/fileUpload.ts"
-  }
-]
-EOF
+            echo "::warning::CodeMender report empty or missing findings (e.g. quota limit reached). Using fallback findings report."
+            cp .github/scripts/fallback_report.json "$RUNNER_TEMP/cm-security-report.json"
           fi
           echo "----- report (first 2 KB) -----"
           head -c 2048 "$RUNNER_TEMP/cm-security-report.json" || true

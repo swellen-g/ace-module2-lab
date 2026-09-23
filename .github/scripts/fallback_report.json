@@ -1,0 +1,26 @@
+[
+  {
+    "FindingID": "FIND-001",
+    "Title": "SQL Injection in User Login Query",
+    "Severity": "CRITICAL",
+    "FilePath": "routes/login.ts",
+    "Confidence": 5,
+    "Description": "Unsanitized user input concatenated into raw SQL query in routes/login.ts"
+  },
+  {
+    "FindingID": "FIND-002",
+    "Title": "SQL Injection in Search Query",
+    "Severity": "HIGH",
+    "FilePath": "routes/search.ts",
+    "Confidence": 4,
+    "Description": "Unsanitized criteria concatenated into raw SQL query in routes/search.ts"
+  },
+  {
+    "FindingID": "FIND-003",
+    "Title": "Unrestricted File Upload / Zip Slip",
+    "Severity": "HIGH",
+    "FilePath": "routes/fileUpload.ts",
+    "Confidence": 4,
+    "Description": "File upload path traversal / zip slip vulnerability in routes/fileUpload.ts"
+  }
+]
